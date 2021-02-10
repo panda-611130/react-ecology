@@ -6,12 +6,17 @@ class reduxPage extends Component {
   render() {
     const { counter, add, minus } = this.props;
     return (
-      <div>
+      <div className="react-redux-page">
         <h1>MyReactReduxPage</h1>
-        <p>====={counter}=======</p>
-        <button onClick={add}>add</button>
-        &nbsp; &nbsp; &nbsp; &nbsp;
-        <button onClick={minus}>minus</button>
+        <p>====== {counter} =======</p>
+        <div className="button-area">
+          <span className="button" onClick={add}>
+            +
+          </span>
+          <span className="button" onClick={minus}>
+            -
+          </span>
+        </div>
       </div>
     );
   }

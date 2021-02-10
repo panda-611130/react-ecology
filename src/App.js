@@ -1,4 +1,4 @@
-import "./App.css";
+import "./App.less";
 import BrowserRouter, {
   Link,
   Route,
@@ -15,15 +15,15 @@ function App() {
       <BrowserRouter>
         <div className="router-link">
           <Link className="link-item" to="/home">
-            home
+            homePage
           </Link>
           <Link className="link-item" to="/user">
-            user
+            userPage
           </Link>
           <Link className="link-item" to="/login">
-            login
+            loginPage
           </Link>
-          <Link className="link-item" to="/reduxPage">
+          <Link className="link-item redux" to="/reduxPage">
             reduxPage
           </Link>
         </div>
@@ -32,10 +32,15 @@ function App() {
           {/* <Switch location={{ pathname: "/reduxPage" }}> */}
           <Switch>
             <Route exact path="/home" component={HomePage} />
-            <Route exact path="/login" component={Login} />
+            <Route exact path="/login" children={Login} />
             {/* 如果外层不包裹 switch 会发现 下面的这个路由总是渲染的 */}
             <Route exact path="/reduxPage" component={reduxPage} />
-            <Route path="/user" render={() => <div>render</div>} />
+            <Route
+              path="/user"
+              render={() => (
+                <div className="user-page">使用Route-render Api</div>
+              )}
+            />
             <Route render={() => <div>404 page not find</div>} />
           </Switch>
         </div>
