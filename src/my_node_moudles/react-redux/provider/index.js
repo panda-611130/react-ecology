@@ -2,13 +2,17 @@ import React, { useState, useEffect, useContext } from "react";
 import { Context } from "../reduxContext";
 
 export function Provider({ store, children }) {
-  return <Context.Provider value={store}>{children}</Context.Provider>;
+  return <Context.Provider
+    value={store}>
+    {children}
+  </Context.Provider>;
 }
 
 /**
  *
  * @param {*} mapStateToProps
  * @param {*} mapDispatchToProps function|object|null
+ * return  返回一个funtion 高阶组件
  */
 export const connect = (
   mapStateToProps = (state) => state,
@@ -17,6 +21,7 @@ export const connect = (
   const store = useContext(Context);
   //属性代理： 获取store中的最新数据传递给组件
   const getMoreProps = () => {
+    // 将 mapStateToProps 函数执行可以 ‘套取出’
     const stateProps = mapStateToProps(store.getState());
     let dispatchProps = {};
     const { dispatch } = store;
@@ -32,12 +37,14 @@ export const connect = (
       ...dispatchProps,
     };
   };
+
   const [moreProps, setMoreProps] = useState(getMoreProps());
   useEffect(() => {
     store.subscribe(() => {
       setMoreProps({ ...moreProps, ...getMoreProps() });
     });
   }, []);
+  // 属性代理
   return <Comp {...props} {...moreProps} />;
 };
 
@@ -50,6 +57,11 @@ export const connect = (
  *                              },
  * @param {*} dispatch  store 中的dispatch函数
  *
+ * 
+ * 最终返回 
+ * {
+ *  add: (...arg) => (dispatch({ type: "add" })),
+ * }
  */
 const bindActionCreaters = (actionCreators, dispatch) => {
   let obj = {};
@@ -67,5 +79,6 @@ const bindActionCreaters = (actionCreators, dispatch) => {
  * @param {*} dispatch
  */
 const bindActionCreater = (creator, dispatch) => {
+  //在这个例子中
   return (...args) => dispatch(creator(...args));
 };

@@ -24,7 +24,7 @@ export function createStore(reducer, enhancer) {
     currentListeners.push(listener);
   };
 
-  dispatch({ type: "@INIT/REDUX-KKB" });
+  dispatch({ type: "@INIT/REDUX" });
 
   return {
     getState,

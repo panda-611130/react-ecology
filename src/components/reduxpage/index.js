@@ -10,7 +10,7 @@ class reduxPage extends Component {
         <h1>MyReactReduxPage</h1>
         <p>====== {counter} =======</p>
         <div className="button-area">
-          <span className="button" onClick={add}>
+          <span className="button" onClick={() => add(Math.ceil(Math.random() * 10))}>
             +
           </span>
           <span className="button" onClick={minus}>
@@ -25,9 +25,17 @@ class reduxPage extends Component {
 export default connect(
   //mapStateToProps
   (state) => ({ counter: state.count }),
-  //mapDispatchToProps
+  //mapDispatchToProps,
   {
-    add: () => ({ type: "add" }),
+    add: (value) => ({ type: "add", value: value }),
     minus: () => ({ type: "minus" }),
   }
 )(reduxPage);
+
+
+// const mapDispatchToProps = (dispatch, ownProps) => {
+//   return {
+//     add: (...args) => dispatch(actions.increase(...args)),
+//     // ...some action
+//   }
+// }
