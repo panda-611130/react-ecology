@@ -39,6 +39,13 @@ export const connect = (
   };
 
   const [moreProps, setMoreProps] = useState(getMoreProps());
+  // 相当于在新组件didMount中进行
+  // componentDidMount() {
+  //   // 订阅
+  //   store.subscribe(() => {
+  //     this.forceUpdate();
+  //   });
+  // }
   useEffect(() => {
     store.subscribe(() => {
       setMoreProps({ ...moreProps, ...getMoreProps() });
