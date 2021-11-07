@@ -44,3 +44,74 @@
 
 
 ## react-redux 
+
+- 核心思路
+
+  - 大前提：数据的传递， 依赖于生产/消费者模式  Provider  Consumer
+
+  - 线路一：connect 高阶组件（属性代理）目的产出的新组件除了有之前的能力以外还获取到了
+
+    - store中的对应数据字段（mapStateToProps）
+
+      ![image-20211107172455491](src/assets/img/属性代理mapStateToProps-001.png)
+
+    
+
+    - 获取到了改变store 数据状态的方法dispatch({\*\****})。
+
+      ![image-20211107172327319](src/assets/img/属性代理mapDispatchToProps-001.png)	
+
+      - 向 store的监听者数组中添加自己的处理函数，确保只要store的数据状态一改变，我就执行上面的两个动作。从而实现获取到最新的store数据并进行更新
+
+  - 线路2:store 的实现
+
+    - 发布订阅方式
+
+      订阅
+
+      ![image-20211107174054438](src/assets/img/store-发布订阅-订阅-001.png)
+
+      发布
+
+      ![image-20211107174254288](src/assets/img/store-发布订阅-发布-001.png)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

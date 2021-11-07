@@ -2,13 +2,23 @@ import { createStore, applyMiddleware } from "../my_node_moudles/react-redux/ind
 
 import { counterReducer } from "./counterReducer";
 
-const store = createStore(counterReducer, applyMiddleware(thunk, logger));
+const store = createStore(
+    counterReducer,
+    applyMiddleware(thunk, logger, doSome)
+);
 
 export default store;
 
+function doSome({ getState, dispatch }) {
+    return (dispatch) => (action) => {
+        console.log("==== doSome ===");
+        return dispatch(action);
+    };
+}
 
 function logger({ getState, dispatch }) {
     return (dispatch) => (action) => {
+        console.log("==== logger ===");
         return dispatch(action);
     };
 }
