@@ -1,70 +1,46 @@
-# Getting Started with Create React App
+# 仿写react-router && react-redux 
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+## react-router
 
-## Available Scripts
+- 核心设计思路：
+  -  BrowserRouter： 通过  CreateContext （Provider->Consumer ） 的方式将history 对象传递给子组件 ，并且BrowserRouter 组件自身监听 history 的变化而后setstate 就可以实现子组件的重新渲染匹配
+  - Link： 本质上就是一个 a标签（但是被阻止了默认行为，他的作用就是通过 Consumer 的方式获取到BrowserRouter父组件传递过来的 history 对象当我们click时候进行 push 操作，这样就会被 BrowserRouter所感知（history.listen） 触发上面的过程
+  - Switch： 对其内部包裹的各个 Route 组件进行 React.Children.forEach 并且找到与当前路径匹配的Route 组件进行React.cloneElement 复制生成一个一个reactElement，如果没有找到 展示 404 默认页面。
+  - Route 按照  chilidren > component >render 的顺序决定调用那个props 最后展示页面。
+    - 需要考虑两种情况
+      - 被Switch 包裹：这样的话实际只有一个 Route 组件被实力化（不管是否与路由匹配）一些匹配路由的逻辑Switch已经完成。
+      - 没有被 Switch 包裹：那么所有的 Route 条目都会被实力化，Route 内部需要自己进行一下逻辑判断，只有与路由匹配的实例 才可以展示。其他展示 null
+- TODO
+  - 没有 Switch 包裹的Route 不能实现 404 页面的展示。似乎可以通过redirect 实现
 
-In the project directory, you can run:
 
-### `yarn start`
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+- component配置项允许我们传递进去函数，但是每次上层组件（也可以是这个Route组件被引用的组件）的状态发生改变的时候。这个 child组件都会不断的进行挂载和卸载。
 
-The page will reload if you make edits.\
-You will also see any lint errors in the console.
+  - 渲染component的时候会调用 react.creatElement 如果使用下面这种匿名尖头函数的方式 导致生成组件的type总是不同的，所以会重复的挂载和卸载。
 
-### `yarn test`
+  <img src="src/assets/img/react-router-api-component-001.png" alt="image-20211107112132102" style="zoom: 85%;" />
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+  所以更加的推荐在使用render api的时候 传递函数
 
-### `yarn build`
+  ![image-20211107113017815](src/assets/img/react-router-api-render-001.png)
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+- 经典面试题 history 和 hash 路由的区别
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+  > https://www.cnblogs.com/HappyYawen/p/14251578.html
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+  1. 形式不同： 一个是 “#/path” 一个就是普通的路径
 
-### `yarn eject`
+  2. 实现原理不同：
 
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
+      hash 路由是通过浏览器监听hashchange事件，在回调函数中获取到 window.location.hash 的值，做到对应的hash路由和UI的对应。
 
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+     history 路由是通过 H5 的 history api来修改浏览器的历史记录。具体的话是使用了 新增的  pushState() 和 replaceState() 方法
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
+  3.  是否需要后端的支持：hash 路由并不会被浏览器发送给服务器，但是histoy会在我们刷新页面的时候真正的访问后端定义的路由，所以需要服务端的支持 否则会 404。
 
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
+     
 
-## Learn More
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
 
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `yarn build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+## react-redux 

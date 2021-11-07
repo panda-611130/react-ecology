@@ -26,6 +26,9 @@ function App() {
           <Link className="link-item redux" to="/reduxPage">
             reduxPage
           </Link>
+          <Link className="link-item" to="/errordebug">
+            404 debug
+          </Link>
         </div>
 
         <div className="router-view">
@@ -38,10 +41,19 @@ function App() {
             <Route
               path="/user"
               render={() => (
-                <div className="user-page">使用Route-render Api</div>
+                <div className="user-page">user page 使用Route-render Api</div>
               )}
             />
-            <Route render={() => <div>404 page not find</div>} />
+            {/* 注意  404 的页面目前我们只制定了 children 的api方式 其他component-render 都是无效的  */}
+            <Route children={() => {
+              return (<div className="mother-fuker "
+                style={{ width: "100%", height: "100%", textAlign: "center", color: "red" }}>
+                <pre>
+                  surprise mother fuker!!!
+                  page not find 0_0
+                </pre>
+              </div>)
+            }} />
           </Switch>
         </div>
       </BrowserRouter>

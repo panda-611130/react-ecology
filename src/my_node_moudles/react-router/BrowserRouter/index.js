@@ -26,6 +26,7 @@ class BrowserRouter extends Component {
   }
 
   componentWillUnmount() {
+    // 关闭historyApi的监听
     if (this.unListenFunc) {
       this.unListenFunc();
     }

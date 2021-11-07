@@ -1,5 +1,7 @@
 import pathToRegexp from "path-to-regexp";
 
+
+// 本文件代码直接拷贝自 react-router
 const cache = {};
 const cacheLimit = 10000;
 let cacheCount = 0;
