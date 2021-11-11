@@ -35,7 +35,7 @@
 
       hash 路由是通过浏览器监听hashchange事件，在回调函数中获取到 window.location.hash 的值，做到对应的hash路由和UI的对应。
 
-     history 路由是通过 H5 的 history api来修改浏览器的历史记录。具体的话是使用了 新增的  pushState() 和 replaceState() 方法
+      history 路由是通过 H5 的 history api来修改浏览器的历史记录。具体的话是使用了新增的 pushState() 和 replaceState() 方法。
 
   3.  是否需要后端的支持：hash 路由并不会被浏览器发送给服务器，但是histoy会在我们刷新页面的时候真正的访问后端定义的路由，所以需要服务端的支持 否则会 404。
 
@@ -76,6 +76,19 @@
       ![image-20211107174254288](src/assets/img/store-发布订阅-发布-001.png)
 
 
+
+## react-redux 实现原理
+
+​	核心：react-redux =  **高阶组件** + **发布订阅模式** + **react.context（生产消费者模式）**
+
+1. react.createContext   最外层被Provider 组件包裹，value = store 开辟一个通道使得子组件能获取到这个store
+2. **高阶组件：connect**
+   - 在这里 usecontext 获取到 store 实例。
+   - 通过属性代理的方式将组件需要的 store中的数据字段以及 dispath 的具体action 传入到最终输出的组件中。
+   - connect 内部会调用  store.subscribe 函数将 组件实获取store数据字段dispath函数 以及触发最终生成组件重新渲染的具体逻辑 放入到订阅者执行队列中。
+
+2. **发布订阅模式**
+   - 当组件A dispatch 一个action的时候 首先会被传递到store ，store形象的比喻为一个金主，并不知道这个action具体会做什么，它就先把这个 action 传递给 reducer管家，在此期间会经过中间件对这个action做一些处理，reducer接到这个action之后会查阅自己的小账本，计算出最新的金库总额并返回给 store，store 就会给自己的所有订阅者发送消息（执行订阅者执行队列中的函数）所有订阅store状态的 并且在运行中的组件就会重新更新。
 
 
 
