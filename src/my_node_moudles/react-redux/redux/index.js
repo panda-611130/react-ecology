@@ -1,4 +1,4 @@
-/**
+ /**
  *
  * @param {*} reducer
  * @param {*} enhancer 中间件，实际是applyMiddleware 执行后的结果
@@ -27,8 +27,14 @@ export function createStore(reducer, enhancer) {
    */
   const subscribe = (listener) => {
     currentListeners.push(listener);
+    //返回注销函数
+    return ()=>{
+      const index = currentListeners.indexOf(listener);
+      currentListeners.splice(index,1);
+    }
   };
 
+  //初始化初始值
   dispatch({ type: "@INIT/REDUX" });
   return {
     getState,
