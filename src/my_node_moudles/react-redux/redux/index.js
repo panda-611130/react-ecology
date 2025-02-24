@@ -52,12 +52,10 @@ export function createStore(reducer, enhancer) {
 export function applyMiddleware(...middlewareas) {
   return (createStore) => (...reducer) => {
     const store = createStore(...reducer);
-
     let dispatch = store.dispatch;
-
     const middleApi = {
       getState: store.getState,
-      dispatch,
+      dispatch:(action) => dispatch(action)
     };
     //返回的还是一个函数数组 也就是各个中间件执行后renturn 回来的第一层函数
     const middlewaresChian = middlewareas.map((middleware) =>

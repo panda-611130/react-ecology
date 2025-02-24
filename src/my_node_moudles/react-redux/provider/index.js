@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext } from "react";
+import React, { useState, useEffect, useContext, useLayoutEffect } from "react";
 import { Context } from "../reduxContext";
 
 export function Provider({ store, children }) {
@@ -49,7 +49,8 @@ export const connect = (
       //     this.forceUpdate();
       //   });
       // }
-      useEffect(() => {
+      // 同步执行订阅以及
+      useLayoutEffect(() => {
         store.subscribe(() => {
           setMoreProps({ ...moreProps, ...getMoreProps() });
         });
@@ -87,3 +88,46 @@ const bindActionCreater = (creator, dispatch) => {
   //在这个例子中
   return (...args) => dispatch(creator(...args));
 };
+
+
+
+//
+function useForceUpdate() {
+  // const [state, setState] = useState(0);
+  const [, setState] = useReducer((x) => x + 1, 0);
+
+  const update = useCallback(() => {
+    // setState((prev) => prev + 1);
+    setState();
+  }, []);
+
+  return update;
+}
+
+// 模拟useDispatch + useSelector
+export function useDispatch() {
+  const store = useContext(Context);
+  return store.dispatch
+}
+
+
+
+export function useSelector(selecor) {
+  const store = useContext(Context);
+  const selectedState = selecor(store.getState());
+
+  const forceUpdate = useForceUpdate();
+
+  useLayoutEffect(() => {
+    const unsubscribe = store.subscribe(() => {
+      // forceUpdate
+      forceUpdate();
+    });
+    return () => {
+      unsubscribe();
+    };
+  }, [store]);
+
+  return selectedState;
+}
+
